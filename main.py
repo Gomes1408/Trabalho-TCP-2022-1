@@ -8,6 +8,7 @@ def main(argv):
         print(f"Recuperou: {argv}")
 
     janelaPrincipal = MainWindow()
+    janelaPrincipal.mainframeloop()
     janelaPrincipal.mainloop()
 
 if(__name__ == "__main__"):
