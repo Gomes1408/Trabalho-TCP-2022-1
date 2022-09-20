@@ -1,4 +1,4 @@
-from mido import Message, MidiFile, MidiTrack
+import pygame
 
 class Text:
     def __init__(self, text: str, corresponding_MIDI):
@@ -14,10 +14,7 @@ class Text:
 
     def text_to_MIDI(self):
         file = input("\nInsira o nome do novo arquivo MIDI a ser criado: ")
-        midi = MidiFile()
-
-
-        midi.save(file)
+        
         
 
 
