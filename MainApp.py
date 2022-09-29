@@ -1,8 +1,11 @@
+from utils import resourcePath, listFromFile
 from tkinter import Tk, Frame, Text, Button, Scrollbar, Menu, Label
+from tkinter.ttk import Separator
+from TextEditor import TextEditor
 from CustomText import CustomText
-from LineNumbers import LineNumbers
-
-class MainWindow(Tk):
+from CustomLabel import CustomLabel
+from MidiPlayer import MidiPlayer
+class MainApp(Tk):
     def __init__(
         self,
         width = 1200, # dimensão X inicial da janela
@@ -30,17 +33,12 @@ class MainWindow(Tk):
         self.frameDelta = frameDelta
         self.frameSerial = 0
 
-        # gerenciamento de objetos
-        self.editorFrame = Frame(self, relief="raised", borderwidth=5, bg="purple")
-        self.editorFrame.pack(side="left", fill="both")
-        self.inputFrame = Frame(self.editorFrame, relief="raised", borderwidth=5, bg="red")
-        self.inputFrame.pack(side="top", fill="both", expand=True, pady=5)
-        self.consoleFrame = Frame(self.editorFrame, relief="raised", borderwidth=5, bg="green")
-        self.consoleFrame.pack(side="bottom", fill="both")
-        self.editFrame = Frame(self, relief="raised", borderwidth=5, bg="blue")
-        self.editFrame.pack(side="right", fill="both", expand=True)
-        self.syntaxFrame = Frame(self, relief="raised", borderwidth=5, bg="yellow")
-        self.syntaxFrame.pack(side="right", fill="both", expand=True)
+        # gerenciamento de objetos (frames)
+        self.editorFrame = Frame(self, relief="raised", borderwidth=1)
+        self.editorFrame.pack(side="left", fill="both", pady=5, padx=5)
+        
+        self.mediaFrame = Frame(self, relief="raised", borderwidth=1)
+        self.mediaFrame.pack(side="right", fill="both", expand=True, pady=5, padx=5)
 
         # menus drop down
         self.menuBar = Menu(self)
@@ -50,33 +48,64 @@ class MainWindow(Tk):
         self.createMidiMenu()
         self.createHelpMenu()
 
-        # colocar borda
+        # editor de texto principal
+        self.inputEditor = TextEditor(labelText="Editor de texto",
+            toolTipText="Texto que vai ser convertido para MIDI",
+            hasSubTitle=False,
+            initialText="aAbBcC",
+            minWidth=25,
+            minHeight=20,
+            master=self.editorFrame, borderwidth=0)
+        self.inputEditor.packWidgets()
 
-        # editor de texto (input do usuário)
-        self.inputTextLabel = Label(self.inputFrame, text="Editor de texto", anchor="w")
-        self.inputTextLabel.pack(side="top", fill="both")
-        self.inputText = CustomText(self.inputFrame, width=50)
-        self.inputTextLineNumbers = LineNumbers(self.inputFrame, self.inputText, width=2)
-        self.inputTextLineNumbers.pack(side="left", fill="both")
-        self.inputText.pack(side="left", fill="both", expand=True)
-        self.inputTextLineNumbers.on_key_release()
-        self.inputTextScrollBar = Scrollbar(self.inputFrame, command=self.inputText.yview)
-        self.inputTextScrollBar.pack(side="right", fill="both")
-        self.inputText.configure(yscrollcommand=self.inputTextScrollBar.set)
-
-        
         # console e label respectiva
-        self.consoleLabel = Label(self.consoleFrame, text="Terminal - Status: OK", anchor="w")
-        self.consoleLabel.pack(side="top", fill="x")
-        self.consoleText = CustomText(self.consoleFrame, height=20)
-        self.consoleText.pack(side="bottom", expand=True, fill="both")
-        self.consoleText.insert("end", "esse é o console")
+        self.console = TextEditor(labelText="Terminal",
+            toolTipText="Saida padrão para o tratamento de erros",
+            subtitleText="Status: Pronto",
+            initialText="esse eh o console",
+            hasLineNumbers=False,
+            minWidth=25,
+            editable=False,
+            master=self.editorFrame)
+        self.console.packWidgets()
 
-        self.closeWindowButton = Button(self.editFrame, text='Fechar', command=self.exit)
+        # visualizador de sintaxe
+        self.syntaxVisualizer = TextEditor(labelText="Visualizador de sintaxe",
+            toolTipText="Visualizador de sintaxe passo a passo das instruções adicionadas no editor de texto",
+            hasSubTitle=False,
+            initialText="esse eh o visualizador de sintaxe",
+            editable=False,
+            minWidth=60,
+            borderwidth=1,
+            relief="raised",
+            master=self)
+        self.syntaxVisualizer.packWidgets(padx=5, pady=5, borderwidth=1)
+
+        # media player
+        instructionList = listFromFile(resourcePath("instructionSet.json"))
+        self.instructionLabels = CustomLabel(instructionSet=instructionList, 
+            title="Lista de instruções", 
+            master=self.mediaFrame, 
+            borderwidth=2,
+            relief="groove")
+        self.instructionLabels.packWidgets()
+        self.instructionLabels.pack(side="bottom", fill="x", expand=True, padx=5, pady=5, anchor="s")
+        
+        self.saveFrame = Frame(self.mediaFrame)
+        self.saveFrame.pack(side="bottom", pady=5, anchor="se")
+
+        self.closeWindowButton = Button(self.saveFrame, text='Fechar', command=self.exit)
         self.closeWindowButton.pack(side="right", padx=5, pady=5)
         
-        self.closeWindowButton = Button(self.editFrame, text='Salvar', command=None)
-        self.closeWindowButton.pack(side="right", padx=0, pady=5)
+        self.saveProjectButton = Button(self.saveFrame, text='Salvar projeto', command=None)
+        self.saveProjectButton.pack(side="right", pady=5)
+
+        self.exportButton = Button(self.saveFrame, text="Exportar como MIDI", command=None)
+        self.exportButton.pack(side="right", padx=5, pady=5)
+
+        self.midiControl = MidiPlayer(master=self.mediaFrame)
+        self.midiControl.packWidgets()
+        self.midiControl.pack(side="top", expand=True, fill="both", pady=5)
 
         #self.update()
         self.eval('tk::PlaceWindow . center')
