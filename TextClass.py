@@ -149,6 +149,8 @@ class Text:
 
         newMIDI.save(file)
 
+        self.corresponding_MIDI = newMIDI
+
         
 
 
