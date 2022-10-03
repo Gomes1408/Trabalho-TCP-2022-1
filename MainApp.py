@@ -5,6 +5,9 @@ from TextEditor import TextEditor
 from CustomText import CustomText
 from CustomLabel import CustomLabel
 from MidiPlayer import MidiPlayer
+import MidiClass
+import TextClass
+
 class MainApp(Tk):
     def __init__(
         self,
@@ -113,7 +116,7 @@ class MainApp(Tk):
     def createFileMenu(self):
         self.fileMenu = Menu(self.menuBar, tearoff=False)
         self.fileMenu.add_command(label="Novo", command=None)
-        self.fileMenu.add_command(label="Abrir", command=None)
+        self.fileMenu.add_command(label="Abrir texto", command = TextClass.get_text_from_file())
         self.fileMenu.add_command(label="Salvar", command=None)
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label="Fechar", command=self.exit)
@@ -127,6 +130,7 @@ class MainApp(Tk):
         self.menuBar.add_cascade(label="Editar", menu=self.editMenu)
     def createMidiMenu(self):
         self.midiMenu = Menu(self.menuBar, tearoff=False)
+        self.midiMenu.add_command(label="Abrir MIDI", command = MidiClass.get_midi_from_file())
         self.midiMenu.add_command(label="Montar", command=None)
         self.menuBar.add_cascade(label="MIDI", menu=self.midiMenu)
     def createHelpMenu(self):
