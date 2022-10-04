@@ -18,11 +18,7 @@ def main(argv):
     if(argv):
         print(f"Recuperou: {argv}")
     
-<<<<<<< HEAD
-    janelaPrincipal = MainApp(title = "Text2MIDI - Projeto sem nome")
-=======
-    janelaPrincipal = MainWindow(title = "Text2MIDI - Projeto sem nome*")
->>>>>>> 9a577036d8d40c9bea01ad05c371e56323b7b7e5
+    janelaPrincipal = MainApp(title="Text2MIDI - Projeto sem nome")
     janelaPrincipal.update()
     janelaPrincipal.mainFrameLoop()
     janelaPrincipal.mainloop()  # metodo mainloop (tkinter) para atualizar a janela
