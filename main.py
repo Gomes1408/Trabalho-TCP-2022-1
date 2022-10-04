@@ -1,6 +1,4 @@
 from sys import argv
-import mido
-import TextClass
 from MainApp import MainApp
 
 def main(argv):

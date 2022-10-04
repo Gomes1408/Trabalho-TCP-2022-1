@@ -1,4 +1,3 @@
-# import pygame
 from mido import Message, MidiFile, MidiTrack
 
 DEFAULT_VELOCITY = 32
@@ -23,7 +22,7 @@ PROGRAM_CHURCH_ORGAN = 20
 PROGRAM_PAN_FLUTE = 76
 PROGRAM_AGOGO = 114
 
-class Text:
+class TextCstm:
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
@@ -31,16 +30,20 @@ class Text:
         self.text = text
         self.corresponding_MIDI = corresponding_MIDI
 
-    def get_text_from_file(self):
-        file = input("\nEscreva o nome de um arquivo existente a ser lido: ")
-        self.text = open(file, 'r', encoding="utf-8")
+    def get_text_from_file(self, filePath):
+        trgtFile = open(filePath, 'r', encoding="utf-8")
+        self.text = trgtFile.read()
+        trgtFile.close()
     
     def get_text_from_label(self):
         print('Hello')
 
     def text_to_MIDI(self):
-        file = input("\nInsira o nome do novo arquivo MIDI a ser criado: ")
+        print('Montando:')
+        print(self.text)
 
+        file = "teste.mid"
+        
         newMIDI = MidiFile(type = 0)
         newTrack = MidiTrack()
         newMIDI.tracks.append(newTrack)

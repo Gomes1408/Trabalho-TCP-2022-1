@@ -71,7 +71,7 @@ class TextEditor(Frame):
             self.inputTextLabel.pack(side="top", fill="y")
         
         if(self.hasLineNumbers):
-            self.inputTextLineNumbers.pack(side="left", fill="y", expand=True)
+            self.inputTextLineNumbers.pack(side="left", fill="y", expand=False)
         
         if(self.hasScrollBar):
             self.inputTextScrollBar.pack(side="right", fill="both")
