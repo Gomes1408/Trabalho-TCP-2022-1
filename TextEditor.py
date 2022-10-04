@@ -54,6 +54,9 @@ class TextEditor(Frame):
         """Insere dado texto na posição apontada pelo cursor, pode ser '1.0' para inicio, uma posição especifica
         ou 'end' para inserir no final do widget"""
         self.inputText.insert(cursor, text)
+    def deleteText(self):
+        """Remove todo o texto do widget texto principal""" 
+        self.inputText.delete("1.0", "end")
     def getText(self, start="1.0", end="end-1c"):
         """Recupera o conteudo do widget Text a partir do intervalo especificado"""
         return self.inputText.get(start, end)

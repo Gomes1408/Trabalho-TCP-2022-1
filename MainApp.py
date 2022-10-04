@@ -1,5 +1,6 @@
-from utils import resourcePath, listFromFile
+from utils import resourcePath, listFromFile, pathExists, resourcePath
 from tkinter import Tk, Frame, Text, Button, Scrollbar, Menu, Label
+from tkinter import filedialog as fd
 from tkinter.ttk import Separator
 from TextEditor import TextEditor
 from CustomText import CustomText
@@ -33,6 +34,11 @@ class MainApp(Tk):
         self.frameDelta = frameDelta
         self.frameSerial = 0
 
+        # arquivo texto principal
+        self.textFile = None
+        self.saved = True, False  # (valor, foi indicado no titulo da janela)
+        self.exported = False, False  # (valor, foi indicado no titulo da janela)
+
         # gerenciamento de objetos (frames)
         self.editorFrame = Frame(self, relief="raised", borderwidth=1)
         self.editorFrame.pack(side="left", fill="both", pady=5, padx=5)
@@ -57,6 +63,8 @@ class MainApp(Tk):
             minHeight=20,
             master=self.editorFrame, borderwidth=0)
         self.inputEditor.packWidgets()
+        self.inputEditor.deleteText()
+        print(f"Teste: '{self.inputEditor.getText()}'")
 
         # console e label respectiva
         self.console = TextEditor(labelText="Terminal",
@@ -89,7 +97,7 @@ class MainApp(Tk):
             borderwidth=2,
             relief="groove")
         self.instructionLabels.packWidgets()
-        self.instructionLabels.pack(side="bottom", fill="x", expand=True, padx=5, pady=5, anchor="s")
+        self.instructionLabels.pack(side="bottom", fill="x", expand=True, padx=5, pady=5)
         
         self.saveFrame = Frame(self.mediaFrame)
         self.saveFrame.pack(side="bottom", pady=5, anchor="se")
@@ -113,7 +121,7 @@ class MainApp(Tk):
     def createFileMenu(self):
         self.fileMenu = Menu(self.menuBar, tearoff=False)
         self.fileMenu.add_command(label="Novo", command=None)
-        self.fileMenu.add_command(label="Abrir", command=None)
+        self.fileMenu.add_command(label="Abrir", command=self.askOpenFile)
         self.fileMenu.add_command(label="Salvar", command=None)
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label="Fechar", command=self.exit)
@@ -123,7 +131,7 @@ class MainApp(Tk):
         self.editMenu.add_command(label="Copiar", command=None)
         self.editMenu.add_command(label="Recortar", command=None)
         self.editMenu.add_command(label="Colar", command=None)
-        self.editMenu.add_command(label="Selecionar tudo", command=None)
+        self.editMenu.add_command(label="Selecionar tudo", command=self.selectAll)
         self.menuBar.add_cascade(label="Editar", menu=self.editMenu)
     def createMidiMenu(self):
         self.midiMenu = Menu(self.menuBar, tearoff=False)
@@ -133,6 +141,7 @@ class MainApp(Tk):
         self.helpMenu = Menu(self.menuBar, tearoff=False)
         self.helpMenu.add_command(label="Sobre", command=None)
         self.menuBar.add_cascade(label="Ajuda", menu=self.helpMenu)
+    
     # gerenciamento de eventos e fluxo de quadros
     def mainFrameLoop(self):
         if(not self.windowShouldClose):
@@ -144,6 +153,42 @@ class MainApp(Tk):
                 print(f"Main window was closed - {e}")
     def _on_change(self, event):
         self.linenumbers.redraw()
+    def changeWindowTitle(self, title, prefix="Text2MIDI - "):
+        self.title(prefix + title)
+    def askOpenFile(self):
+        self.textFile = fd.askopenfilename(title='Abrir arquivo de projeto', initialdir='/', filetypes=[("Text files","*.txt")])
+        self.changeWindowTitle(self.textFile)
+        self.checkExported()
+    def checkExported(self):
+        """Checa se existe um arquivo MIDI com o mesmo nome do projeto no mesmo local indicado pelo arquivo de texto,
+        se não, indica no titulo da janela"""
+        midiFilePath = self.textFile.rsplit(".", 1)[0] + ".mid"
+        if(not pathExists(resourcePath(midiFilePath))):
+            if(not self.exported[1]):  # se isso não esta sendo inidicado no titulo
+                self.title(self.title() + " - (não exportado)")
+                self.exported[1] = True
+    def checkSaved(self):
+        """Idica se o arquivo atual foi salvo depois de serem realizadas alterações no titulo da janela com um asterisco"""
+        if(not self.saved[0]):  # se o arquivo não foi salvo
+            if(not self.saved[1]):  # se não houver "*" no titulo da janela
+                if(" (não exportado)" in self.title()):  # se houver o titulo de nao exportado no titulo
+                    newTitle = self.title().replace(" (não exportado)", "") + "*" + " (não exportado)"
+                    self.title(newTitle)
+                    self.saved[1] = True
+                    return
+                self.title(self.title() + "*")
+                self.saved[1] = True
+        else:  # se o arquivo foi salvo
+            if(self.saved[1]):  # se houver um asterisco no titulo da janela
+                newTitle = self.title().replace("*", "")  # remove
+                self.title(newTitle)  # atualiza o titulo
+                self.saved[1] = False
+
+            midiFilePath = self.textFile.rsplit(".", 1)[0] + ".mid"
+            self.title(self.title() + " (não exportado)")
+    def selectAll(self):
+        self.inputEditor.tag_add("sel", "1.0","end") # all text selected
+        self.inputEditor.tag_config("sel", background="green", foreground="red")
     def exit(self):
         print("Fechando a janela principal")
         self.destroy()

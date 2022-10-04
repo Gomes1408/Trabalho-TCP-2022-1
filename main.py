@@ -7,7 +7,7 @@ def main(argv):
     if(argv):
         print(f"Recuperou: {argv}")
     
-    janelaPrincipal = MainApp(title = "Text2MIDI - Projeto sem nome*")
+    janelaPrincipal = MainApp(title = "Text2MIDI - Projeto sem nome")
     janelaPrincipal.update()
     janelaPrincipal.mainFrameLoop()
     janelaPrincipal.mainloop()  # metodo mainloop (tkinter) para atualizar a janela

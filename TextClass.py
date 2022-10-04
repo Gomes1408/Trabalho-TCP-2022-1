@@ -1,4 +1,4 @@
-import pygame
+# import pygame
 from mido import Message, MidiFile, MidiTrack
 
 DEFAULT_VELOCITY = 32
