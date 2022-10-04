@@ -1,7 +1,7 @@
 from mido import Message, MidiFile, MidiTrack
 
 #Definição de valores padrões para o MIDI
-DEFAULT_VELOCITY = 32
+DEFAULT_VELOCITY = 31
 DEFAULT_TIME = 32
 DEFAULT_OCTAVE = 1
 DEFAULT_PROGRAM = 0
