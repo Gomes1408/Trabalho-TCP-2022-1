@@ -1,5 +1,4 @@
-from tkinter import *
-from tkinter import filedialog
+import pygame
 from mido import Message, MidiFile, MidiTrack
 
 DEFAULT_VELOCITY = 32
@@ -33,7 +32,8 @@ class Text:
         self.corresponding_MIDI = corresponding_MIDI
 
     def get_text_from_file(self):
-        file = filedialog.askopenfilename(initialdir = "/", title = "Select a File", filetypes = (("Text files", "*.txt*"), ("all files", "*.*")))
+        file = input("\nEscreva o nome de um arquivo existente a ser lido: ")
+        self.text = open(file, 'r', encoding="utf-8")
     
     def get_text_from_label(self):
         print('Hello')
