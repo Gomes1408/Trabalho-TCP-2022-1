@@ -1,13 +1,13 @@
 from TextClass import TextCstm
 from MidiClass import Midi
-from utils import resourcePath, listFromFile, pathExists, resourcePath
-from tkinter import Tk, Frame, Text, Button, Scrollbar, Menu, Label
+from utils import resourcePath, pathExists, resourcePath#, listFromFile
+from tkinter import Tk, Frame, Menu#, Text, Button, Scrollbar, Label
 from tkinter import filedialog as fd
-from tkinter.ttk import Separator
+#from tkinter.ttk import Separator
 from TextEditor import TextEditor
-from CustomText import CustomText
-from CustomLabel import CustomLabel
-from MidiPlayer import MidiPlayer
+#from CustomText import CustomText
+#from CustomLabel import CustomLabel
+#from MidiPlayer import MidiPlayer
 from mido import MidiFile
 
 class MainApp(Tk):
@@ -170,9 +170,11 @@ class MainApp(Tk):
             self.textObj.text = self.inputEditor.getText()
             self.midiObj.midi =self.textObj.corresponding_MIDI
 
+    #Função para atualizar a barra de linhas do editor
     def _on_change(self, event):
         self.linenumbers.redraw()
 
+    #Função para alterar o título da janela
     def changeWindowTitle(self, title, prefix="Text2MIDI"):
         self.title(prefix)
 
@@ -215,6 +217,7 @@ class MainApp(Tk):
         self.inputEditor.tag_add("sel", "1.0","end") # all text selected
         self.inputEditor.tag_config("sel", background="green", foreground="red")
     
+    #Função para recuperar texto a partir de um arquivo .txt
     def openTextFile(self):
         filePath = fd.askopenfilename(title='Abrir arquivo de projeto', initialdir='/', filetypes=[("Text files","*.txt")])
         
@@ -224,6 +227,7 @@ class MainApp(Tk):
 
         self.inputEditor.insertText(self.textObj.text, 1.0)
 
+    #Função para salvar o corpo de texto do editor num arquivo .txt
     def saveTextFile(self):
         filePath = fd.asksaveasfilename(title='Salvar arquivo de projeto', initialdir='/', filetypes=[("Text files","*.txt")])
 
@@ -235,6 +239,7 @@ class MainApp(Tk):
 
         newFile.close()
 
+    #Função para salvar o arquivo MIDI montado num arquivo .mid, caso não haja um objeto MIDI, nada é salvo
     def saveMidiFile(self):
         filePath = fd.asksaveasfilename(title='Salvar arquivo de projeto', initialdir='/', filetypes=[("MIDI files","*.mid")])
 
@@ -245,6 +250,7 @@ class MainApp(Tk):
 
         newFile.save(filePath)
     
+    #Função que apaga o texto presente no editor
     def deleteEditorText(self):
         self.inputEditor.deleteText()
 

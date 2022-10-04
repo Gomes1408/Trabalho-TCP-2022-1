@@ -5,6 +5,7 @@ def main(argv):
     if(argv):
         print(f"Recuperou: {argv}")
     
+    #Instanciação da janela principal de execução
     janelaPrincipal = MainApp(title = "Text2MIDI - Projeto sem nome")
     janelaPrincipal.update()
     janelaPrincipal.mainFrameLoop()
